@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "tckn": "10240388821",
+        "isim": "mete",
+        "soyisim": "acar",
+        "cinsiyet": "Erkek"
+    },
+    {
+        "id": 2,
+        "tckn": "0231032321",
+        "isim": "mete",
+        "soyisim": "aaa",
+        "cinsiyet": "Kad\u0131n"
+    },
+    {
+        "id": 3,
+        "tckn": "90909090",
+        "isim": "mete",
+        "soyisim": "kose",
+        "cinsiyet": "Erkek"
+    },
+    {
+        "id": 4,
+        "tckn": "132132132",
+        "isim": "ay\u015fe",
+        "soyisim": "han\u0131m",
+        "cinsiyet": "Kad\u0131n"
+    },
+    {
+        "id": 5,
+        "tckn": "132132132",
+        "isim": "ay\u015fe2",
+        "soyisim": "han\u0131m",
+        "cinsiyet": "Kad\u0131n"
+    },
+    {
+        "id": 6,
+        "tckn": "132132132",
+        "isim": "ay\u015fe3",
+        "soyisim": "han\u0131m",
+        "cinsiyet": "Kad\u0131n"
+    },
+    {
+        "id": 7,
+        "tckn": "132132132",
+        "isim": "ay\u015fe5",
+        "soyisim": "han\u0131m",
+        "cinsiyet": "Kad\u0131n"
+    }
+]

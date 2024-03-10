@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biyoteknoloji Öğrenci Listesi</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Biyoteknoloji Öğrenci Listesi</h2>
+    <input class="form-control mb-3" id="searchInput" type="text" placeholder="Arama...">
+    <div class="mb-3">
+        <button class="btn btn-primary" id="refreshButton">Yenile</button>
+        <button class="btn btn-success" data-toggle="modal" data-target="#addUserModal">Ekle</button>
+        <!-- Ekleme için Modal -->
+        <div class="modal" id="addUserModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Yeni Kullanıcı Ekle</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ID: <input type="text" id="idInput" class="form-control" style="visibility: hidden; ">
+                        TCKN: <input type="text" id="tcknInput" class="form-control">
+                        İsim: <input type="text" id="nameInput" class="form-control">
+                        Soyisim: <input type="text" id="surnameInput" class="form-control">
+                        Cinsiyet: <select id="genderInput" class="form-control">
+                            <option value="Erkek">Erkek</option>
+                            <option value="Kadın">Kadın</option>
+                        </select>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="saveUserButton">Kaydet</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>TCKN</th>
+                <th>İsim</th>
+                <th>Soyisim</th>
+                <th>Cinsiyet</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            <!-- Kullanıcı bilgileri burada listelenecek -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function(){
+    function fetchUsers() {
+        $.getJSON("http://127.0.0.1:8080/api/users", function(data){
+            var userRows = '';
+            $.each(data, function(key, value){
+                userRows += '<tr>';
+                userRows += '<td>' + value.id + '</td>';
+                userRows += '<td>' + value.tckn + '</td>';
+                userRows += '<td>' + value.isim + '</td>';
+                userRows += '<td>' + value.soyisim + '</td>';
+                userRows += '<td>' + value.cinsiyet + '</td>';
+                userRows += '<td><button class="btn btn-danger deleteUserButton" data-id="' + value.id + '">Sil</button>';
+                userRows += ' <button class="btn btn-info updateUserButton" data-id="' + value.id + '">Güncelle</button></td>';
+                userRows += '</tr>';
+            });
+            $('#userTable').html(userRows);
+        });
+    }
+
+    fetchUsers(); // Sayfa yüklendiğinde kullanıcıları getir
+
+    $("#refreshButton").click(function(){
+        fetchUsers();
+    });
+
+    // Kullanıcı ekleme işlemi
+    $("#saveUserButton").click(function(){
+        var newUser = {
+            id:$("#idInput").val(),
+            tckn: $("#tcknInput").val(),
+            isim: $("#nameInput").val(),
+            soyisim: $("#surnameInput").val(),
+            cinsiyet: $("#genderInput").val()
+        };
+        $.ajax({
+            url: 'http://127.0.0.1:8080/api/users',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(newUser),
+            success: function(result) {
+                alert("Kullanıcı eklendi");
+                $("#addUserModal").modal('hide');
+                fetchUsers();
+            }
+        });
+    });
+
+    // Kullanıcı silme işlemi (Dinamik olarak oluşturulan butonlar için event delegation kullanılır)
+    $(document).on('click', '.deleteUserButton', function(){
+        var userId = $(this).data('id');
+        $.ajax({
+            url: 'http://127.0.0.1:8080/api/users/' + userId,
+            type: 'DELETE',
+            success: function(result) {
+                alert("Kullanıcı silindi");
+                fetchUsers();
+            }
+        });
+    });
+
+    // Kullanıcı güncelleme işlemi (Bu örnek basitlik adına tam olarak implemente edilmemiştir)
+    $(document).on('click', '.updateUserButton', function(){
+        alert("Kullanıcı güncelleme işlemi henüz implemente edilmedi.");
+        // Burada kullanıcı güncelleme modalı açılabilir ve benzer şekilde bir güncelleme işlemi yapılabilir.
+    });
+
+    // Arama fonksiyonu
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#userTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+</script>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
